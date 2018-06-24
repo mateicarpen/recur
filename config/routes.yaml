@@ -1,0 +1,14 @@
+tasks_index:
+  path: /tasks
+  controller: App\Controller\TasksController::index
+  methods: [GET]
+
+tasks_store:
+  path: /tasks
+  controller: App\Controller\TasksController::store
+  methods: [POST]
+
+tasks_create:
+  path: /tasks/create
+  controller: App\Controller\TasksController::create
+  methods: [GET]
