@@ -17,6 +17,43 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TasksController extends Controller
 {
+    public function todo(TaskRepository $taskRepo)
+    {
+        // TODO: ma asigur ca nu o sa fie probleme cu datele (sa fie toate despre ora 00 - cred)
+
+        $tasks = $taskRepo->findStartedEarlierThan(new \DateTime);
+        $currentDate = new \DateTime;
+
+        $todos = [];
+        foreach ($tasks as $task) {
+            if (is_null($task->getLastCompleted())) {
+                $todos[] = $task;
+                continue;
+            }
+
+            $dueDate = $this->getTaskDueDate($task);
+
+            if ($dueDate <= $currentDate && $task->getLastCompleted() < $dueDate) {
+                $todos[] = $task;
+            }
+        }
+
+        return $this->render('tasks/todos.html.twig', [
+            'todos' => $todos,
+        ]);
+    }
+
+    public function complete($id, TaskRepository $taskRepo, EntityManagerInterface $em)
+    {
+        $task = $taskRepo->find($id); // exception if not found
+
+        $task->setLastCompleted(new \DateTime);
+
+        $em->flush();
+
+        return $this->redirectToRoute('todo');
+    }
+
     public function index(TaskRepository $taskRepo)
     {
         $task = $taskRepo->findAll();
@@ -107,5 +144,44 @@ class TasksController extends Controller
             'expanded' => true,
         ])
         ->getForm();
+    }
+
+    private function getTaskDueDate(Task $task)
+    {
+        switch ($task->getFrequencyUnit()->getId()) {
+            case FrequencyUnit::DAY:
+                $periodString = 'D';
+                break;
+
+            case FrequencyUnit::WEEK:
+                $periodString = 'W';
+                break;
+
+            case FrequencyUnit::MONTH:
+                $periodString = 'M';
+                break;
+        }
+
+        $interval = new \DateInterval('P' . $task->getFrequency() . $periodString);
+
+
+        $adjustOnCompletion = $task->getAdjustOnCompletion();
+        if ($adjustOnCompletion) {
+            $date = clone $task->getLastCompleted();
+
+            return $date->add($interval);
+        } else {
+            $date = clone $task->getStartDate();
+            $currentDate = new \DateTime('today');
+
+            while($date < $currentDate) {
+                $dueDate = clone $date;
+
+                $date->add($interval);
+            }
+
+            return $dueDate;
+        }
+
     }
 }

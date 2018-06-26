@@ -38,6 +38,11 @@ class Task
     private $startDate;
 
     /**
+     * @ORM\Column(type="date")
+     */
+    private $lastCompleted;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $adjustOnCompletion;
@@ -115,6 +120,18 @@ class Task
     public function getAdjustOnCompletion(): ?bool
     {
         return $this->adjustOnCompletion;
+    }
+
+    public function setLastCompleted(\DateTimeInterface $lastCompleted): self
+    {
+        $this->lastCompleted = $lastCompleted;
+
+        return $this;
+    }
+
+    public function getLastCompleted(): ?\DateTimeInterface
+    {
+        return $this->lastCompleted;
     }
 
     public function setCreateDate(\DateTimeInterface $createDate): self

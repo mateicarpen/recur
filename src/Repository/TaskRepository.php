@@ -19,6 +19,15 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findStartedEarlierThan(\DateTime $date)
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.startDate <= :date')
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Task[] Returns an array of Task objects
 //     */

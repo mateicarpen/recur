@@ -1,3 +1,6 @@
 - add some style
-- add calendar to create/update page
 - make delete use the proper verb
+- last_completed ar trebui sa fie data poate (desi daca tin si log, nu e neaparat nevoie)
+- properly rename routes
+- tests for the listing page
+- functionality for delaying
