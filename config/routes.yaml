@@ -3,12 +3,17 @@ tasks_index:
   controller: App\Controller\TasksController::index
   methods: [GET]
 
-tasks_store:
-  path: /tasks
-  controller: App\Controller\TasksController::store
-  methods: [POST]
-
 tasks_create:
   path: /tasks/create
   controller: App\Controller\TasksController::create
+  methods: [POST, GET]
+
+tasks_update:
+  path: /tasks/{id}/edit
+  controller: App\Controller\TasksController::edit
+  methods: [POST, GET]
+
+tasks_delete:
+  path: /tasks/{id}/delete
+  controller: App\Controller\TasksController::delete
   methods: [GET]

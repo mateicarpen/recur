@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.name) }}
+
+        <div>
+            {{ form_label(form.frequency) }}
+
+            Every
+            {{ form_widget(form.frequency) }}
+            {{ form_widget(form.frequencyUnit) }}
+
+            {{ form_errors(form.frequency) }}
+            {{ form_errors(form.frequencyUnit) }}
+        </div>
+
+        {{ form_row(form.startDate) }}
+
+        {{ form_row(form.adjustOnCompletion) }}
+
+        <div>
+            <button>Submit</button>
+        </div>
+
+    {{ form_end(form) }}
+
+{% endblock %}

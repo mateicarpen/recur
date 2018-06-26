@@ -22,8 +22,8 @@ class Task
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FrequencyUnit", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\FrequencyUnit")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $frequencyUnit;
 

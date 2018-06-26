@@ -9,7 +9,9 @@
                 <th>Name</th>
                 <th>Frequency</th>
                 <th>Start Date</th>
+                <th>Adjustable Frequency</th>
                 <th>Created On</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
@@ -21,7 +23,12 @@
                     <td>{{ task.name }}</td>
                     <td>Every {{ task.frequency }} {{ task.frequencyUnit.name }} </td>
                     <td>{{ task.startDate.format('D, d M') }}</td>
+                    <td>{{ task.adjustOnCompletion ? 'yes' : 'no' }}</td>
                     <td>{{ task.createDate.format('D, d M \\a\\t H:i') }}</td>
+                    <td>
+                        <a href="/tasks/{{ task.id }}/edit">[update]</a>
+                        <a href="/tasks/{{ task.id }}/delete">[delete]</a>
+                    </td>
                 </tr>
 
             {% endfor %}

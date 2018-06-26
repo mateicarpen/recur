@@ -2,11 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\FrequencyUnit;
 use App\Entity\Task;
 use App\Repository\FrequencyUnitRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 class TasksController extends Controller
@@ -20,34 +26,86 @@ class TasksController extends Controller
         ]);
     }
 
-    public function create(FrequencyUnitRepository $unitRepo)
+    public function create(Request $request, EntityManagerInterface $em, FrequencyUnitRepository $unitRepo)
     {
-        $unitOptions = $unitRepo->findAll();
+        $task = new Task;
+        $form = $this->getForm($task);
+        $form->handleRequest($request);
 
-        return $this->render('tasks/create.html.twig', [
-            'unitOptions' => $unitOptions
+        // validation
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
+
+            $task->setCreateDate(new \DateTime()); // TODO: move from here wtf
+            $task->setUpdateDate(new \DateTime());
+
+            $em->persist($task);
+            $em->flush();
+
+            return $this->redirectToRoute('tasks_index');
+        }
+
+        return $this->render('tasks/form.html.twig', [
+            'title' => 'Create task',
+            'form' => $form->createView()
         ]);
     }
 
-    public function store(Request $request, EntityManagerInterface $em, FrequencyUnitRepository $unitRepo)
+    public function edit($id, Request $request, EntityManagerInterface $em, TaskRepository $taskRepo, FrequencyUnitRepository $unitRepo)
     {
-        // TODO: validation
+        $task = $taskRepo->find($id);
 
-        $frequencyUnit = $unitRepo->findOneById($request->get('frequencyUnit'));
+        $form = $this->getForm($task);
+        $form->handleRequest($request);
 
-        $task = new Task;
-        $task->setName($request->get('name'));
-        $task->setFrequencyUnit($frequencyUnit);
-        $task->setFrequency($request->get('frequency'));
-        $task->setStartDate(new \DateTime($request->get('startDate')));
-        $task->setAdjustOnCompletion((bool)$request->get('adjustOnCompletion'));
+        // validation
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
 
-        $task->setCreateDate(new \DateTime()); // TODO: move from here wtf
-        $task->setUpdateDate(new \DateTime());
+            $task->setUpdateDate(new \DateTime());
 
-        $em->persist($task);
+            $em->flush();
+
+            return $this->redirectToRoute('tasks_index');
+        }
+
+        return $this->render('tasks/form.html.twig', [
+            'title' => 'Edit task',
+            'form' => $form->createView(),
+        ]);
+    }
+
+    public function delete($id, TaskRepository $taskRepo, EntityManagerInterface $em)
+    {
+        $task = $taskRepo->find($id);
+
+        $em->remove($task);
         $em->flush();
 
         return $this->redirectToRoute('tasks_index');
+    }
+
+    private function getForm(Task $task = null)
+    {
+        return $this->createFormBuilder($task, [
+            'method' => 'POST'
+        ])
+        ->add('name', TextType::class)
+        ->add('frequency', IntegerType::class)
+        ->add('frequencyUnit', EntityType::class, [
+            'class' => FrequencyUnit::class,
+            'choice_label' => 'name'
+        ])
+        ->add('startDate', DateType::class, [
+            'widget' => 'single_text',
+        ])
+        ->add('adjustOnCompletion', ChoiceType::class, [
+            'choices' => [
+                'Yes' => true,
+                'No' => false
+            ],
+            'expanded' => true,
+        ])
+        ->getForm();
     }
 }

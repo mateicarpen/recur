@@ -1,0 +1,3 @@
+- add some style
+- add calendar to create/update page
+- make delete use the proper verb

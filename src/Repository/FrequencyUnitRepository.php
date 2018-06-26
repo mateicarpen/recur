@@ -36,15 +36,15 @@ class FrequencyUnitRepository extends ServiceEntityRepository
     }
     */
 
-
-    public function findOneById($id): ?FrequencyUnit
-    {
-        return $this->createQueryBuilder('f')
-            ->where('f.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
+//
+//    public function findOneById($id): ?FrequencyUnit
+//    {
+//        return $this->createQueryBuilder('f')
+//            ->where('f.id = :id')
+//            ->setParameter('id', $id)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 
 }
