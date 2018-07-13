@@ -26,6 +26,7 @@
                     <td>{{ task.adjustOnCompletion ? 'yes' : 'no' }}</td>
                     <td>{{ task.createDate.format('D, d M \\a\\t H:i') }}</td>
                     <td>
+                        <a href="/tasks/{{ task.id }}/logs">[view logs]</a>
                         <a href="/tasks/{{ task.id }}/edit">[update]</a>
                         <a href="/tasks/{{ task.id }}/delete">[delete]</a>
                     </td>

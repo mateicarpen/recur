@@ -6,6 +6,11 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+        <div>
+            <a href="{{ path('todo') }}">Home</a>
+            <a href="{{ path('tasks_index') }}">Manage Tasks</a>
+        </div>
+
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>

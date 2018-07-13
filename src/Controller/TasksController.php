@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\FrequencyUnit;
 use App\Entity\Task;
+use App\Entity\TaskLog;
 use App\Repository\FrequencyUnitRepository;
+use App\Repository\TaskLogRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -47,8 +49,14 @@ class TasksController extends Controller
     {
         $task = $taskRepo->find($id); // exception if not found
 
-        $task->setLastCompleted(new \DateTime);
+        $now = new \DateTime();
+        $task->setLastCompleted($now);
 
+        $log = new TaskLog();
+        $log->setTask($task);
+        $log->setCreateDate($now);
+
+        $em->persist($log);
         $em->flush();
 
         return $this->redirectToRoute('todo');
@@ -60,6 +68,17 @@ class TasksController extends Controller
 
         return $this->render('tasks/index.html.twig', [
             'tasks' => $task,
+        ]);
+    }
+
+    public function logs(int $id, TaskRepository $taskRepo, TaskLogRepository $logRepo)
+    {
+        $task = $taskRepo->find($id);
+        $logs = $logRepo->findByTask($task);
+
+        return $this->render('tasks/logs.html.twig', [
+            'task' => $task,
+            'logs' => $logs,
         ]);
     }
 
@@ -88,7 +107,7 @@ class TasksController extends Controller
         ]);
     }
 
-    public function edit($id, Request $request, EntityManagerInterface $em, TaskRepository $taskRepo, FrequencyUnitRepository $unitRepo)
+    public function edit(int $id, Request $request, EntityManagerInterface $em, TaskRepository $taskRepo, FrequencyUnitRepository $unitRepo)
     {
         $task = $taskRepo->find($id);
 
@@ -112,7 +131,7 @@ class TasksController extends Controller
         ]);
     }
 
-    public function delete($id, TaskRepository $taskRepo, EntityManagerInterface $em)
+    public function delete(int $id, TaskRepository $taskRepo, EntityManagerInterface $em)
     {
         $task = $taskRepo->find($id);
 

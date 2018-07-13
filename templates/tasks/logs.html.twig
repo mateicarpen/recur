@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Logs for '{{ task.getName() }}'</h1>
+
+    {% if logs %}
+
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Date</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for log in logs %}
+
+                <tr>
+                    <td>{{ log.createDate.format('D, d M, H:i') }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+{% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +39,7 @@ class Task
     private $startDate;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $lastCompleted;
 
@@ -56,6 +57,16 @@ class Task
      * @ORM\Column(type="datetime")
      */
     private $updateDate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TaskLog", mappedBy="task", orphanRemoval=true)
+     */
+    private $taskLogs;
+
+    public function __construct()
+    {
+        $this->taskLogs = new ArrayCollection();
+    }
 
     public function getId()
     {

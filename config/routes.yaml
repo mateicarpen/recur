@@ -25,3 +25,8 @@ tasks_delete:
   path: /tasks/{id}/delete
   controller: App\Controller\TasksController::delete
   methods: [GET]
+
+tasks_logs:
+  path: /tasks/{id}/logs
+  controller: App\Controller\TasksController::logs
+  methods: [GET]
