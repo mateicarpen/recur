@@ -3,11 +3,10 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
+use FOS\UserBundle\Form\Type\ProfileFormType as BaseProfileFormType;
 use Symfony\Component\Form\FormBuilderInterface;
-use FOS\UserBundle\Form\Type\RegistrationFormType as BaseRegistrationFormType;
 
-class RegistrationFormType extends BaseRegistrationFormType
+class ProfileFormType extends BaseProfileFormType
 {
     public function __construct()
     {
@@ -20,6 +19,7 @@ class RegistrationFormType extends BaseRegistrationFormType
 
         $builder
             ->add('name')
-            ->remove('username');
+            ->remove('username')
+            ->remove('email');
     }
 }

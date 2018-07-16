@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div>
+        <div class="row justify-content-md-center">
+            <div class="col-md-4">
+                {% if app.request.hasPreviousSession %}
+                    {% for type, messages in app.session.flashbag.all() %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }}" role="alert" style="margin-top: 20px;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -18,11 +18,28 @@ class User extends BaseUser
      */
     protected $id;
 
-    public function setEmail($email)
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    public function setEmail($email): self
     {
         $email = is_null($email) ? '' : $email;
         parent::setEmail($email);
         $this->setUsername($email);
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName($name): self
+    {
+        $this->name = $name;
 
         return $this;
     }

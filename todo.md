@@ -1,9 +1,12 @@
-- add some style
 - make delete use the proper verb
-- last_completed ar trebui sa fie data poate (desi daca tin si log, nu e neaparat nevoie)
 - properly rename routes
 - tests for the listing page
 - functionality for delaying
-- add user management
 - undo button
 - refactor after user management
+- page titles
+- registration emails? reset password
+- registration placeholders
+- new edit profile page, without the password
+- associate tasks with users
+- style the thing

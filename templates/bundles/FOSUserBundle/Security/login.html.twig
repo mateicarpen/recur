@@ -1,0 +1,47 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block content %}
+
+    <h1>Log In</h1>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form action="{{ path("fos_user_security_check") }}" method="post">
+        {% if csrf_token %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        {% endif %}
+
+        <div class="form-group">
+            <label for="username">Email address</label>
+            <input type="email" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter email" name="_username" value="{{ last_username }}" required="required" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" name="_password" required="required" autocomplete="current-password">
+        </div>
+
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="remember-me" name="_remember_me" value="on">
+            <label class="form-check-label" for="remember-me">Remember me</label>
+        </div>
+
+
+
+        <button class="form-control btn btn-primary"
+                type="submit"
+                id="_submit"
+                name="_submit">
+            Log In
+        </button>
+    </form>
+
+    <div style="margin-top: 20px;">
+        New to Recur? <a href="/register">Sign Up now.</a>
+    </div>
+
+{% endblock content %}

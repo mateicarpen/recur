@@ -1,0 +1,26 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block content %}
+
+    <h1 style="margin-top: 30px; margin-bottom: 40px;">Sign Up</h1>
+
+    {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+
+        {{ form_row(form.name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.plainPassword) }}
+
+        <button class="form-control btn btn-primary"
+                type="submit"
+                id="_submit"
+                name="_submit">
+            Sign Up
+        </button>
+    {{ form_end(form) }}
+
+
+    <div style="margin-top: 20px;">
+        Aleady have an account? <a href="/login">Log In.</a>
+    </div>
+
+{% endblock content %}

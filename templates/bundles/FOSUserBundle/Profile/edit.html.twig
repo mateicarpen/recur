@@ -1,0 +1,23 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block content %}
+
+    <h1>Edit profile</h1>
+
+    {{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+
+        {{ form_row(form.name) }}
+        {{ form_row(form.current_password) }}
+
+        <div>
+            <button class="form-control btn btn-primary"
+                    type="submit"
+                    id="_submit"
+                    name="_submit">
+                Save Changes
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+
+{% endblock content %}
