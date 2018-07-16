@@ -116,7 +116,7 @@ class Task
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?\DateTime
     {
         return $this->startDate;
     }
@@ -140,7 +140,7 @@ class Task
         return $this;
     }
 
-    public function getLastCompleted(): ?\DateTimeInterface
+    public function getLastCompleted(): ?\DateTime
     {
         return $this->lastCompleted;
     }

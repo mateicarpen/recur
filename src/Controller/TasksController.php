@@ -28,6 +28,8 @@ class TasksController extends Controller
 
         $todos = [];
         foreach ($tasks as $task) {
+            /** @var $task Task */
+
             if (is_null($task->getLastCompleted())) {
                 $todos[] = $task;
                 continue;
@@ -182,7 +184,6 @@ class TasksController extends Controller
         }
 
         $interval = new \DateInterval('P' . $task->getFrequency() . $periodString);
-
 
         $adjustOnCompletion = $task->getAdjustOnCompletion();
         if ($adjustOnCompletion) {

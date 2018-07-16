@@ -30,3 +30,6 @@ tasks_logs:
   path: /tasks/{id}/logs
   controller: App\Controller\TasksController::logs
   methods: [GET]
+
+fos_user:
+  resource: "@FOSUserBundle/Resources/config/routing/all.xml"
