@@ -19,31 +19,28 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TasksController extends Controller
 {
-    public function todo(TaskRepository $taskRepo)
+    /**
+     * @var TaskRepository
+     */
+    private $taskRepo;
+
+    public function __construct(TaskRepository $taskRepo)
+    {
+        $this->taskRepo = $taskRepo;
+    }
+
+    public function todo()
     {
         // TODO: ma asigur ca nu o sa fie probleme cu datele (sa fie toate despre ora 00 - cred)
 
-        $tasks = $taskRepo->findStartedEarlierThan(new \DateTime, $this->getUser());
-        $currentDate = new \DateTime;
-
-        $todos = [];
-        foreach ($tasks as $task) {
-            /** @var $task Task */
-
-            if (is_null($task->getLastCompleted())) {
-                $todos[] = $task;
-                continue;
-            }
-
-            $dueDate = $this->getTaskDueDate($task);
-
-            if ($dueDate <= $currentDate && $task->getLastCompleted() < $dueDate) {
-                $todos[] = $task;
-            }
-        }
+        $tasksDueToday = $this->getTasksDueToday();
+        $tasksDueTomorrow = $this->getTasksDueTomorrow($tasksDueToday);
+        $tasksDueNextDays = $this->getTasksDueNextDays($tasksDueToday, $tasksDueTomorrow);
 
         return $this->render('tasks/todos.html.twig', [
-            'todos' => $todos,
+            'tasksDueToday' => $tasksDueToday,
+            'tasksDueTomorrow' => $tasksDueTomorrow,
+            'tasksDueNextDays' => $tasksDueNextDays,
         ]);
     }
 
@@ -153,7 +150,7 @@ class TasksController extends Controller
         return $this->redirectToRoute('tasks_index');
     }
 
-    private function getForm(Task $task = null)
+    private function getForm(Task $task = null) // TODO: Form file
     {
         return $this->createFormBuilder($task, [
             'method' => 'POST'
@@ -177,7 +174,84 @@ class TasksController extends Controller
         ->getForm();
     }
 
-    private function getTaskDueDate(Task $task)
+    /**
+     * @return Task[]
+     */
+    private function getTasksDueToday(): array
+    {
+        $today = new \DateTime;
+
+        return $this->getTasksDue($today);
+    }
+
+    /**
+     * @param Task[] $tasksDueToday
+     * @return Task[]
+     */
+    private function getTasksDueTomorrow(array $tasksDueToday): array
+    {
+        $tomorrow = new \DateTime('+1 day');
+
+        $tasks = $this->getTasksDue($tomorrow);
+
+        foreach ($tasks as $key => $task) {
+            if (in_array($task, $tasksDueToday)) {
+                unset($tasks[$key]);
+            }
+        }
+
+        return $tasks;
+    }
+
+    /**
+     * @param Task[] $tasksDueToday
+     * @param Task[] $tasksDueTomorrow
+     * @return Task[]
+     */
+    private function getTasksDueNextDays(array $tasksDueToday, array $tasksDueTomorrow): array
+    {
+        $date = new \DateTime('+6 days');
+
+        $tasks = $this->getTasksDue($date);
+        $previousTasks = array_merge($tasksDueToday, $tasksDueTomorrow);
+
+        foreach ($tasks as $key => $task) {
+            if (in_array($task, $previousTasks)) {
+                unset($tasks[$key]);
+            }
+        }
+
+        return $tasks;
+    }
+
+    /**
+     * @param \DateTime $date
+     * @return Task[]
+     */
+    private function getTasksDue(\DateTime $date): array
+    {
+        $tasks = $this->taskRepo->findStartedEarlierThan($date, $this->getUser());
+
+        $todos = [];
+        foreach ($tasks as $task) {
+            /** @var $task Task */
+
+            if (is_null($task->getLastCompleted())) {
+                $todos[] = $task;
+                continue;
+            }
+
+            $dueDate = $this->getTaskDueDate($task);
+
+            if ($dueDate <= $date && $task->getLastCompleted() < $dueDate) {
+                $todos[] = $task;
+            }
+        }
+
+        return $todos;
+    }
+
+    private function getTaskDueDate(Task $task): \DateTime
     {
         switch ($task->getFrequencyUnit()->getId()) {
             case FrequencyUnit::DAY:

@@ -6,10 +6,45 @@
 
     <h1>Todos</h1>
 
-    <ul>
-        {% for todo in todos %}
-            <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
-        {% endfor %}
-    </ul>
+    {% if tasksDueToday %}
+
+        <h2>Today</h2>
+
+        <ul>
+            {% for todo in tasksDueToday %}
+                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+
+
+    {% if tasksDueTomorrow %}
+
+        <h2>Tomorrow</h2>
+
+        <ul>
+            {% for todo in tasksDueTomorrow %}
+                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+            {% endfor %}
+        </ul>
+
+
+    {% endif %}
+
+
+
+    {% if tasksDueNextDays %}
+
+        <h2>Next 7 days</h2>
+
+        <ul>
+            {% for todo in tasksDueNextDays %}
+                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
 
 {% endblock %}
