@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} History {% endblock %}
+
+{% block body %}
+    <h1>History</h1>
+
+    {% if logs %}
+
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Task</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for log in logs %}
+
+                <tr>
+                    <td>{{ log.task.name }}</td>
+                    <td>{{ log.createDate.format('D, d M') }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+{% endblock %}

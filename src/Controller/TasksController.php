@@ -84,6 +84,15 @@ class TasksController extends Controller
         ]);
     }
 
+    public function history(TaskLogRepository $logRepo)
+    {
+        $logs = $logRepo->findAllDescending($this->getUser());
+
+        return $this->render('tasks/history.html.twig', [
+            'logs' => $logs
+        ]);
+    }
+
     public function create(Request $request, EntityManagerInterface $em, FrequencyUnitRepository $unitRepo)
     {
         $task = new Task;
