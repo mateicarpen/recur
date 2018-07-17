@@ -23,7 +23,7 @@ class TasksController extends Controller
     {
         // TODO: ma asigur ca nu o sa fie probleme cu datele (sa fie toate despre ora 00 - cred)
 
-        $tasks = $taskRepo->findStartedEarlierThan(new \DateTime);
+        $tasks = $taskRepo->findStartedEarlierThan(new \DateTime, $this->getUser());
         $currentDate = new \DateTime;
 
         $todos = [];
@@ -49,7 +49,7 @@ class TasksController extends Controller
 
     public function complete($id, TaskRepository $taskRepo, EntityManagerInterface $em)
     {
-        $task = $taskRepo->find($id); // exception if not found
+        $task = $taskRepo->findByUser($id, $this->getUser()); // exception if not found
 
         $now = new \DateTime();
         $task->setLastCompleted($now);
@@ -66,7 +66,7 @@ class TasksController extends Controller
 
     public function index(TaskRepository $taskRepo)
     {
-        $task = $taskRepo->findAll();
+        $task = $taskRepo->findAllByUser($this->getUser());
 
         return $this->render('tasks/index.html.twig', [
             'tasks' => $task,
@@ -75,7 +75,7 @@ class TasksController extends Controller
 
     public function logs(int $id, TaskRepository $taskRepo, TaskLogRepository $logRepo)
     {
-        $task = $taskRepo->find($id);
+        $task = $taskRepo->findByUser($id, $this->getUser()); // exception if not found
         $logs = $logRepo->findByTask($task);
 
         return $this->render('tasks/logs.html.twig', [
@@ -94,6 +94,7 @@ class TasksController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
 
+            $task->setUser($this->getUser());
             $task->setCreateDate(new \DateTime()); // TODO: move from here wtf
             $task->setUpdateDate(new \DateTime());
 
@@ -111,7 +112,7 @@ class TasksController extends Controller
 
     public function edit(int $id, Request $request, EntityManagerInterface $em, TaskRepository $taskRepo, FrequencyUnitRepository $unitRepo)
     {
-        $task = $taskRepo->find($id);
+        $task = $taskRepo->findByUser($id, $this->getUser());
 
         $form = $this->getForm($task);
         $form->handleRequest($request);
@@ -135,7 +136,7 @@ class TasksController extends Controller
 
     public function delete(int $id, TaskRepository $taskRepo, EntityManagerInterface $em)
     {
-        $task = $taskRepo->find($id);
+        $task = $taskRepo->findByUser($id, $this->getUser());
 
         $em->remove($task);
         $em->flush();

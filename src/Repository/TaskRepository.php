@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -19,41 +20,27 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findStartedEarlierThan(\DateTime $date): array
+    public function findAllByUser(User $user): array
+    {
+        return $this->findBy(['user' => $user]);
+    }
+
+    public function findByUser(int $id, User $user): ?Task
+    {
+        return $this->findOneBy([
+            'id'   => $id,
+            'user' => $user,
+        ]);
+    }
+
+    public function findStartedEarlierThan(\DateTime $date, User $user): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.startDate <= :date')
+            ->andWhere('t.user = :user')
             ->setParameter('date', $date->format('Y-m-d'))
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
-
-//    /**
-//     * @return Task[] Returns an array of Task objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Task
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

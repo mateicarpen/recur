@@ -18,6 +18,12 @@ class Task
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     */
+    private $user;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -71,6 +77,18 @@ class Task
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     public function getName(): ?string
