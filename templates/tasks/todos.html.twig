@@ -4,6 +4,15 @@
 
 {% block body %}
 
+    {% for type, messages in app.session.flashbag.all() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }}" role="alert" style="margin-top: 20px;">
+                {{ message | raw }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
     <h1>Todos</h1>
 
     {% if tasksDueToday %}

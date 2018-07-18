@@ -151,7 +151,7 @@ class Task
         return $this->adjustOnCompletion;
     }
 
-    public function setLastCompleted(\DateTimeInterface $lastCompleted): self
+    public function setLastCompleted(\DateTimeInterface $lastCompleted = null): self
     {
         $this->lastCompleted = $lastCompleted;
 

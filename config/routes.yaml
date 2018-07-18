@@ -6,6 +6,10 @@ todo_complete:
   path: /tasks/{id}/complete
   controller: App\Controller\TasksController::complete
 
+todo_undo:
+  path: /tasks/{id}/undo
+  controller: App\Controller\TasksController::undo
+
 tasks_index:
   path: /tasks
   controller: App\Controller\TasksController::index

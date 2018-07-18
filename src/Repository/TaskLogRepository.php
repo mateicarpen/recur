@@ -22,16 +22,23 @@ class TaskLogRepository extends ServiceEntityRepository
         parent::__construct($registry, TaskLog::class);
     }
 
-    public function findByTask(Task $task): array
+    /**
+     * @return TaskLog[]
+     */
+    public function findByTask(Task $task, int $count = null): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.task=:task')
             ->setParameter('task', $task)
             ->orderBy('t.create_date', 'DESC')
+            ->setMaxResults($count)
             ->getQuery()
             ->getResult();
     }
 
+    /**
+     * @return TaskLog[]
+     */
     public function findAllDescending(User $user): array
     {
         return $this->createQueryBuilder('t')

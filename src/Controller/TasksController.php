@@ -44,9 +44,9 @@ class TasksController extends Controller
         ]);
     }
 
-    public function complete($id, TaskRepository $taskRepo, EntityManagerInterface $em)
+    public function complete($id, EntityManagerInterface $em)
     {
-        $task = $taskRepo->findByUser($id, $this->getUser()); // exception if not found
+        $task = $this->taskRepo->findByUser($id, $this->getUser()); // exception if not found
 
         $now = new \DateTime();
         $task->setLastCompleted($now);
@@ -58,21 +58,50 @@ class TasksController extends Controller
         $em->persist($log);
         $em->flush();
 
+        $undoUrl = $this->generateUrl('todo_undo', ['id' => $task->getId()]);
+        $flashMessage = "Task completed. <a href='{$undoUrl}'>Undo completion.</a>";
+        $this->addFlash('success', $flashMessage);
+
         return $this->redirectToRoute('todo');
     }
 
-    public function index(TaskRepository $taskRepo)
+    public function undo($id, TaskLogRepository $logRepo, EntityManagerInterface $em)
     {
-        $task = $taskRepo->findAllByUser($this->getUser());
+        $task = $this->taskRepo->findByUser($id, $this->getUser()); // exception if not found
+
+        $fiveMinutesAgo = new \DateTime('-5 minutes');
+
+        if (is_null($task->getLastCompleted()) || $task->getLastCompleted() < $fiveMinutesAgo) {
+            return $this->redirectToRoute('todo');
+        }
+
+        $taskLogs = $logRepo->findByTask($task, 2);
+
+        $em->remove($taskLogs[0]); // remove freshly inserted log
+
+        if (!empty($taskLogs[1])) {
+            $task->setLastCompleted($taskLogs[1]->getCreateDate());
+        } else {
+            $task->setLastCompleted(null);
+        }
+
+        $em->flush();
+
+        return $this->redirectToRoute('todo');
+    }
+
+    public function index()
+    {
+        $task = $this->taskRepo->findAllByUser($this->getUser());
 
         return $this->render('tasks/index.html.twig', [
             'tasks' => $task,
         ]);
     }
 
-    public function logs(int $id, TaskRepository $taskRepo, TaskLogRepository $logRepo)
+    public function logs(int $id, TaskLogRepository $logRepo)
     {
-        $task = $taskRepo->findByUser($id, $this->getUser()); // exception if not found
+        $task = $this->taskRepo->findByUser($id, $this->getUser()); // exception if not found
         $logs = $logRepo->findByTask($task);
 
         return $this->render('tasks/logs.html.twig', [
@@ -90,7 +119,7 @@ class TasksController extends Controller
         ]);
     }
 
-    public function create(Request $request, EntityManagerInterface $em, FrequencyUnitRepository $unitRepo)
+    public function create(Request $request, EntityManagerInterface $em)
     {
         $task = new Task;
         $form = $this->getForm($task);
@@ -116,9 +145,9 @@ class TasksController extends Controller
         ]);
     }
 
-    public function edit(int $id, Request $request, EntityManagerInterface $em, TaskRepository $taskRepo, FrequencyUnitRepository $unitRepo)
+    public function edit(int $id, Request $request, EntityManagerInterface $em)
     {
-        $task = $taskRepo->findByUser($id, $this->getUser());
+        $task = $this->taskRepo->findByUser($id, $this->getUser());
 
         $form = $this->getForm($task);
         $form->handleRequest($request);
@@ -140,9 +169,9 @@ class TasksController extends Controller
         ]);
     }
 
-    public function delete(int $id, TaskRepository $taskRepo, EntityManagerInterface $em)
+    public function delete(int $id, EntityManagerInterface $em)
     {
-        $task = $taskRepo->findByUser($id, $this->getUser());
+        $task = $this->taskRepo->findByUser($id, $this->getUser());
 
         $em->remove($task);
         $em->flush();
