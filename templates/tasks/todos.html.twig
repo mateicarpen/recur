@@ -21,7 +21,10 @@
 
         <ul>
             {% for todo in tasksDueToday %}
-                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+                <li>
+                    {{ todo.name }}
+                    (<a href="{{ path('todo_complete', { id: todo.id }) }}">complete</a>)
+                </li>
             {% endfor %}
         </ul>
 
@@ -35,7 +38,10 @@
 
         <ul>
             {% for todo in tasksDueTomorrow %}
-                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+                <li>
+                    {{ todo.name }}
+                    (<a href="{{ path('todo_complete', { id: todo.id }) }}">complete</a>)
+                </li>
             {% endfor %}
         </ul>
 
@@ -50,7 +56,10 @@
 
         <ul>
             {% for todo in tasksDueNextDays %}
-                <li>{{ todo.name }} (<a href="/tasks/{{ todo.id }}/complete">complete</a>)</li>
+                <li>
+                    {{ todo.name }}
+                    (<a href="{{ path('todo_complete', { id: todo.id }) }}">complete</a>)
+                </li>
             {% endfor %}
         </ul>
 

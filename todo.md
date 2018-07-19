@@ -1,12 +1,18 @@
-- make delete use the proper verb
+To do:
+- refactor
+- check 'TODO' comments
+- disable unused routes from FOSUserBundle
+
+New features:
+- email newsletter (enable email sending - review reset password email as well)
+- new edit profile page, without the password
+
+Maybe:
+- top menu to show active page
+- make delete use the proper verb. And alert on click
 - properly rename routes
 - tests for the listing page
 - functionality for delaying
-- undo button
-- refactor after user management
-- page titles
-- registration emails? reset password
 - registration placeholders
-- new edit profile page, without the password
-- associate tasks with users
-- style the thing
+- registration emails?
+- Manage Tasks table -> add 'Next Due'

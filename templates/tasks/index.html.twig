@@ -6,15 +6,15 @@
 
     <h1>Tasks</h1>
 
-    <table border="1">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Frequency</th>
-                <th>Start Date</th>
-                <th>Adjustable Frequency</th>
-                <th>Created On</th>
-                <th>Actions</th>
+                <th scope="col">Name</th>
+                <th scope="col">Frequency</th>
+                <th scope="col">Adjustable Frequency</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">Created On</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
 
@@ -23,15 +23,19 @@
             {% for task in tasks %}
 
                 <tr>
-                    <td>{{ task.name }}</td>
+                    <td scope="row">{{ task.name }}</td>
                     <td>Every {{ task.frequency }} {{ task.frequencyUnit.name }} </td>
-                    <td>{{ task.startDate.format('D, d M') }}</td>
                     <td>{{ task.adjustOnCompletion ? 'yes' : 'no' }}</td>
-                    <td>{{ task.createDate.format('D, d M \\a\\t H:i') }}</td>
+                    <td>{{ task.startDate.format('D, d M') }}</td>
+                    <td>{{ task.createDate.format('D, d M') }}</td>
                     <td>
-                        <a href="/tasks/{{ task.id }}/logs">[view logs]</a>
-                        <a href="/tasks/{{ task.id }}/edit">[update]</a>
-                        <a href="/tasks/{{ task.id }}/delete">[delete]</a>
+                        <a href="{{ path('tasks_logs', { id: task.id }) }}">[view logs]</a>
+                        <a href="{{ path('tasks_update', { id: task.id }) }}">[update]</a>
+                        <a
+                                href="{{ path('tasks_delete', { id: task.id }) }}"
+                                onClick="return confirm('Are you sure?');">
+                            [delete]
+                        </a>
                     </td>
                 </tr>
 
@@ -40,6 +44,8 @@
         </tbody>
     </table>
 
-    <a href="/tasks/create">Create New Task</a>
+    <a class="btn btn-success" href="{{ path('tasks_create') }}" style="margin-top: 20px;">
+        + Create New Task
+    </a>
 
 {% endblock %}

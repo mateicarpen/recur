@@ -5,30 +5,33 @@
 {% block body %}
     <h1>{{ title }}</h1>
 
-    {{ form_start(form) }}
-        {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
 
-        {{ form_row(form.name) }}
+                {{ form_row(form.name) }}
 
-        <div>
-            {{ form_label(form.frequency) }}
+                <div>
+                    <label for="form_frequency" class="form-control-label frequency_label required">To do every</label>
 
-            Every
-            {{ form_widget(form.frequency) }}
-            {{ form_widget(form.frequencyUnit) }}
+                    {{ form_widget(form.frequency) }}
+                    {{ form_widget(form.frequencyUnit) }}
 
-            {{ form_errors(form.frequency) }}
-            {{ form_errors(form.frequencyUnit) }}
+                    {{ form_errors(form.frequency) }}
+                    {{ form_errors(form.frequencyUnit) }}
+                </div>
+
+                {{ form_row(form.startDate) }}
+
+                {{ form_row(form.adjustOnCompletion) }}
+
+                <button class="form-control btn btn-primary" style="margin-top: 20px;" type="submit">
+                    Submit
+                </button>
+
+            {{ form_end(form) }}
         </div>
-
-        {{ form_row(form.startDate) }}
-
-        {{ form_row(form.adjustOnCompletion) }}
-
-        <div>
-            <button>Submit</button>
-        </div>
-
-    {{ form_end(form) }}
+    </div>
 
 {% endblock %}
