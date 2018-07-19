@@ -112,7 +112,7 @@ class TasksController extends Controller
 
         $this->taskManager->complete($task);
 
-        $undoUrl = $this->generateUrl('todo_undo', ['id' => $task->getId()]);
+        $undoUrl = $this->generateUrl('tasks_undo', ['id' => $task->getId()]);
         $flashMessage = "Task completed. <a href='{$undoUrl}'>Undo completion.</a>";
         $this->addFlash('success', $flashMessage);
 

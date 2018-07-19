@@ -7,10 +7,7 @@ New features:
 
 Maybe:
 - top menu to show active page
-- make delete use the proper verb. And alert on click
-- properly rename routes
-- tests for the listing page
-- functionality for delaying
+- make delete use the proper verb.
 - registration placeholders
 - registration emails?
 - Manage Tasks table -> add 'Next Due'

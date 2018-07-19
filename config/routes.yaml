@@ -2,11 +2,11 @@ todo:
   path: /
   controller: App\Controller\TasksController::todo
 
-todo_complete:
+tasks_complete:
   path: /tasks/{id}/complete
   controller: App\Controller\TasksController::complete
 
-todo_undo:
+tasks_undo:
   path: /tasks/{id}/undo
   controller: App\Controller\TasksController::undo
 
