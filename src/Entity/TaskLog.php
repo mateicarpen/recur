@@ -17,7 +17,7 @@ class TaskLog
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Task", inversedBy="taskLogs")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Task")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $task;

@@ -64,16 +64,6 @@ class Task
      */
     private $updateDate;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TaskLog", mappedBy="task", orphanRemoval=true)
-     */
-    private $taskLogs;
-
-    public function __construct()
-    {
-        $this->taskLogs = new ArrayCollection();
-    }
-
     public function getId()
     {
         return $this->id;
@@ -127,21 +117,14 @@ class Task
         return $this;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): self
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
     public function getStartDate(): ?\DateTime
     {
         return $this->startDate;
     }
 
-    public function setAdjustOnCompletion(bool $adjustOnCompletion): self
+    public function setStartDate(\DateTimeInterface $startDate): self
     {
-        $this->adjustOnCompletion = $adjustOnCompletion;
+        $this->startDate = $startDate;
 
         return $this;
     }
@@ -151,9 +134,9 @@ class Task
         return $this->adjustOnCompletion;
     }
 
-    public function setLastCompleted(\DateTimeInterface $lastCompleted = null): self
+    public function setAdjustOnCompletion(bool $adjustOnCompletion): self
     {
-        $this->lastCompleted = $lastCompleted;
+        $this->adjustOnCompletion = $adjustOnCompletion;
 
         return $this;
     }
@@ -163,9 +146,9 @@ class Task
         return $this->lastCompleted;
     }
 
-    public function setCreateDate(\DateTimeInterface $createDate): self
+    public function setLastCompleted(\DateTimeInterface $lastCompleted = null): self
     {
-        $this->createDate = $createDate;
+        $this->lastCompleted = $lastCompleted;
 
         return $this;
     }
@@ -173,6 +156,13 @@ class Task
     public function getCreateDate(): ?\DateTimeInterface
     {
         return $this->createDate;
+    }
+
+    public function setCreateDate(\DateTimeInterface $createDate): self
+    {
+        $this->createDate = $createDate;
+
+        return $this;
     }
 
     public function getUpdateDate(): ?\DateTimeInterface

@@ -1,6 +1,4 @@
 To do:
-- refactor
-- check 'TODO' comments
 - disable unused routes from FOSUserBundle
 
 New features:
@@ -16,3 +14,4 @@ Maybe:
 - registration placeholders
 - registration emails?
 - Manage Tasks table -> add 'Next Due'
+- form validation
