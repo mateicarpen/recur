@@ -6,6 +6,7 @@ use App\Entity\FrequencyUnit;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Repository\TaskRepository;
+use DateTime;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TodoPlanner
@@ -33,7 +34,7 @@ class TodoPlanner
      */
     public function getTasksDueToday(): array
     {
-        $today = new \DateTime;
+        $today = new DateTime('today');
 
         return $this->getTasksDue($today);
     }
@@ -45,7 +46,7 @@ class TodoPlanner
      */
     public function getTasksDueTomorrow(array $tasksDueToday): array
     {
-        $tomorrow = new \DateTime('+1 day');
+        $tomorrow = new DateTime('tomorrow');
 
         $tasks = $this->getTasksDue($tomorrow);
         $tasks = $this->excludeTasks($tasks, $tasksDueToday);
@@ -61,7 +62,7 @@ class TodoPlanner
      */
     public function getTasksDueNextDays(array $tasksDueToday, array $tasksDueTomorrow): array
     {
-        $date = new \DateTime('+6 days');
+        $date = new DateTime('today + 6 days');
 
         $tasks = $this->getTasksDue($date);
         $tasks = $this->excludeTasks($tasks, array_merge($tasksDueToday, $tasksDueTomorrow));
@@ -71,10 +72,10 @@ class TodoPlanner
 
 
     /**
-     * @param \DateTime $date
+     * @param DateTime $date
      * @return Task[]
      */
-    private function getTasksDue(\DateTime $date): array
+    private function getTasksDue(DateTime $date): array
     {
         $tasks = $this->taskRepo->findStartedEarlierThan($date, $this->currentUser);
 
@@ -98,7 +99,7 @@ class TodoPlanner
     }
 
 
-    private function getTaskDueDate(Task $task): \DateTime
+    private function getTaskDueDate(Task $task): DateTime
     {
         $interval = $this->getTaskInterval($task);
 
@@ -108,16 +109,14 @@ class TodoPlanner
 
             return $date->add($interval);
         } else {
+            $currentDate = new DateTime('today');
             $date = clone $task->getStartDate();
-            $currentDate = new \DateTime('today');
 
             while($date < $currentDate) {
-                $dueDate = clone $date;
-
                 $date->add($interval);
             }
 
-            return $dueDate;
+            return $date;
         }
 
     }
