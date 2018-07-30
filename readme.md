@@ -31,7 +31,7 @@ cd recur
 
 composer install
 
-# modify the .env file to suit your needs (you will need a Pocket consumer key and database details)
+# modify the .env file to suit your needs (you will need database details)
 
 php bin/console doctrine:migrations:migrate
 
