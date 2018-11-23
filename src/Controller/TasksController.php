@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use App\Repository\TaskLogRepository;
 use App\Repository\TaskRepository;
@@ -11,6 +12,7 @@ use App\Services\TodoPlanner;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TasksController extends Controller
 {
@@ -24,11 +26,20 @@ class TasksController extends Controller
      */
     private $taskManager;
 
+    /**
+     * @var User
+     */
+    private $currentUser;
 
-    public function __construct(TaskRepository $taskRepo, TaskManager $taskManager)
-    {
+
+    public function __construct(
+        TaskRepository $taskRepo,
+        TaskManager $taskManager,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->taskRepo = $taskRepo;
         $this->taskManager = $taskManager;
+        $this->currentUser = $tokenStorage->getToken()->getUser();
     }
 
 
@@ -94,9 +105,9 @@ class TasksController extends Controller
 
     public function todo(TodoPlanner $todoPlanner)
     {
-        $tasksDueToday = $todoPlanner->getTasksDueToday();
-        $tasksDueTomorrow = $todoPlanner->getTasksDueTomorrow($tasksDueToday);
-        $tasksDueNextDays = $todoPlanner->getTasksDueNextDays($tasksDueToday, $tasksDueTomorrow);
+        $tasksDueToday = $todoPlanner->getTasksDueToday($this->currentUser);
+        $tasksDueTomorrow = $todoPlanner->getTasksDueTomorrow($tasksDueToday, $this->currentUser);
+        $tasksDueNextDays = $todoPlanner->getTasksDueNextDays($tasksDueToday, $tasksDueTomorrow, $this->currentUser);
 
         return $this->render('tasks/todos.html.twig', [
             'tasksDueToday' => $tasksDueToday,

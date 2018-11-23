@@ -7,7 +7,6 @@ use App\Entity\Task;
 use App\Entity\User;
 use App\Repository\TaskRepository;
 use DateTime;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TodoPlanner
 {
@@ -16,27 +15,21 @@ class TodoPlanner
      */
     private $taskRepo;
 
-    /**
-     * @var User
-     */
-    private $currentUser;
 
-
-    public function __construct(TaskRepository $taskRepo, TokenStorageInterface $tokenStorage)
+    public function __construct(TaskRepository $taskRepo)
     {
         $this->taskRepo = $taskRepo;
-        $this->currentUser = $tokenStorage->getToken()->getUser();
     }
 
 
     /**
      * @return Task[]
      */
-    public function getTasksDueToday(): array
+    public function getTasksDueToday(User $user): array
     {
         $today = new DateTime('today');
 
-        return $this->getTasksDue($today);
+        return $this->getTasksDue($today, $user);
     }
 
 
@@ -44,11 +37,11 @@ class TodoPlanner
      * @param Task[] $tasksDueToday
      * @return Task[]
      */
-    public function getTasksDueTomorrow(array $tasksDueToday): array
+    public function getTasksDueTomorrow(array $tasksDueToday, User $user): array
     {
         $tomorrow = new DateTime('tomorrow');
 
-        $tasks = $this->getTasksDue($tomorrow);
+        $tasks = $this->getTasksDue($tomorrow, $user);
         $tasks = $this->excludeTasks($tasks, $tasksDueToday);
 
         return $tasks;
@@ -60,11 +53,11 @@ class TodoPlanner
      * @param Task[] $tasksDueTomorrow
      * @return Task[]
      */
-    public function getTasksDueNextDays(array $tasksDueToday, array $tasksDueTomorrow): array
+    public function getTasksDueNextDays(array $tasksDueToday, array $tasksDueTomorrow, User $user): array
     {
         $date = new DateTime('today + 6 days');
 
-        $tasks = $this->getTasksDue($date);
+        $tasks = $this->getTasksDue($date, $user);
         $tasks = $this->excludeTasks($tasks, array_merge($tasksDueToday, $tasksDueTomorrow));
 
         return $tasks;
@@ -72,12 +65,11 @@ class TodoPlanner
 
 
     /**
-     * @param DateTime $date
      * @return Task[]
      */
-    private function getTasksDue(DateTime $date): array
+    private function getTasksDue(DateTime $date, User $user): array
     {
-        $tasks = $this->taskRepo->findStartedEarlierThan($date, $this->currentUser);
+        $tasks = $this->taskRepo->findStartedEarlierThan($date, $user);
 
         $dueTasks = [];
         foreach ($tasks as $task) {
