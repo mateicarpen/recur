@@ -53,6 +53,10 @@ class SendNotificationsCommand extends Command
         foreach ($users as $user) {
             $tasks = $this->todoPlanner->getTasksDueToday($user);
 
+            if (empty($tasks)) {
+                continue;
+            }
+
             $subject = 'Tasks due today';
             $message = $this->composeMessage($tasks);
 
